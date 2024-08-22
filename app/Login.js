@@ -1,6 +1,6 @@
 import React, { useContext, useState } from "react";
 import { useRouter } from 'expo-router';
-import { Text, TouchableOpacity, Dimensions, ToastAndroid } from "react-native";
+import { Text, TouchableOpacity } from "react-native";
 import { Center, Box, Heading, VStack, FormControl, Input, Button, HStack } from 'native-base';
 import FirebaseContext from '../context/firebase/firebaseContext';
 
@@ -11,20 +11,9 @@ export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
-    const handleLogIn = async ({ email, password }) => {
-        try {
-            await SignIn(email, password);
-            showToast();
-            router.replace('/NuevaOrden');
-        }
-        catch (error) {
-            alert(error.message);
-        }
+    const handleLogIn = async ({ email, password, router }) => {
+        await SignIn(email, password, router);
     };
-
-    showToast = () => {
-        ToastAndroid.show("Inicio de sesión exitoso", ToastAndroid.SHORT);
-    }
 
     return (
         <Center w="100%" >
@@ -37,7 +26,7 @@ export default function Login() {
                 <Heading mt="1" _dark={{
                     color: "warmGray.200"
                 }} color="coolGray.600" fontWeight="medium" size="xs">
-                    Iniciar sesión para continuar
+                    Ingrese sus credenciales para continuar
                 </Heading>
 
                 <VStack space={3} mt="5">
@@ -68,7 +57,7 @@ export default function Login() {
                         }}
                         borderRadius="full"
                         style={{ backgroundColor: "#FFDA00" }}
-                        onPress={() => handleLogIn({ email, password })}
+                        onPress={() => handleLogIn({ email, password, router })}
                     >
                         Iniciar sesión
                     </Button>

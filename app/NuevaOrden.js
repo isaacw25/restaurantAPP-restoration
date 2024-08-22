@@ -13,12 +13,8 @@ const NuevaOrden = () => {
 
     handleLogOut = () => {
         SignOut();
-        showToast();
-        router.replace('/Login');
-    }
-
-    showToast = () => {
         ToastAndroid.show("Cerrando sesión...", ToastAndroid.SHORT);
+        router.replace('/Login');
     }
 
     return (

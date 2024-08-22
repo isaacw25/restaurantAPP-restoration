@@ -1,5 +1,4 @@
 import React, { useContext, useState } from "react";
-import { ToastAndroid } from "react-native";
 import { Center, Box, Heading, VStack, FormControl, Input, Button } from 'native-base';
 import { useRouter } from 'expo-router';
 import FirebaseContext from '../context/firebase/firebaseContext';
@@ -12,24 +11,13 @@ export default function Registro() {
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
-    const handleRegister = async ({ email, password }) => {
+    const handleRegister = async ({ email, password, router }) => {
         if (password !== confirmPassword) {
             alert("Las contraseñas no coinciden");
             return;
         }
-        try {
-            await Register(email, password);
-            showToast();
-            router.push('/Login');
-        }
-        catch (error) {
-            alert(error.message);
-        }
+        await Register(email, password, router);
     };
-
-    showToast = () => {
-        ToastAndroid.show("Registro exitoso", ToastAndroid.SHORT);
-    }
 
     return (
         <Center w="100%">
@@ -82,7 +70,7 @@ export default function Registro() {
                         }}
                         borderRadius="full"
                         style={{ backgroundColor: "#FFDA00" }}
-                        onPress={() => handleRegister({ email, password })}
+                        onPress={() => handleRegister({ email, password, router })}
                     >
                         Registrarse
                     </Button>

@@ -1,4 +1,5 @@
 import React, { useReducer } from 'react';
+import { ToastAndroid } from 'react-native';
 import { collection, query, onSnapshot } from 'firebase/firestore';
 import { signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from 'firebase/auth';
 import firebase from '../../firebase';
@@ -16,21 +17,41 @@ const FirebaseState = (props) => {
   // useReducer con dispatch para ejecutar las funciones
   const [state, dispatch] = useReducer(FirebaseReducer, initialState);
 
-  const Register = async (email, password) => {
+  const errorMessages = {
+    'auth/user-not-found': "Usuario no encontrado",
+    'auth/missing-password': "Contraseña no válida",
+    'auth/missing-email': "Email no válido",
+    'auth/wrong-password': "Contraseña incorrecta",
+    'auth/invalid-email': "Email no válido",
+    'auth/too-many-requests': "Acceso a esta cuenta ha sido desactivado temporalmente debido a muchos intentos de inicio de sesión fallidos. Intente nuevamente más tarde.",
+    'auth/email-already-in-use': "El correo electrónico ya está en uso",
+    'default-signin': "Error al iniciar sesión",
+    'default-signup': "Error al registrar usuario",
+  };
+
+  const Register = async (email, password, router) => {
     try {
       await createUserWithEmailAndPassword(firebase.auth, email, password);
+      ToastAndroid.show("Registro exitoso", ToastAndroid.SHORT);
+      router.push('/Login');
     } catch (error) {
+      const message = errorMessages[error.code] || errorMessages['default-signup'];
       console.log(error);
+      alert(message);
     }
   };
 
-  const SignIn = async (email, password) => {
+  const SignIn = async (email, password, router) => {
     try {
       await signInWithEmailAndPassword(firebase.auth, email, password);
+      ToastAndroid.show("Inicio de sesión exitoso", ToastAndroid.SHORT);
+      router.replace('/NuevaOrden');
     } catch (error) {
-      console.log(error);
+      const message = errorMessages[error.code] || errorMessages['default-signin'];
+      alert(message);
     }
   };
+
 
   const SignOut = async () => {
     try {
